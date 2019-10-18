@@ -1,0 +1,13 @@
+[package]
+name = "aheui-core"
+version = "0.1.0"
+authors = ["SeongChan Lee <foriequal@gmail.com>"]
+edition = "2018"
+
+[lib]
+
+[features]
+render = []
+parse = []
+
+[dependencies]
