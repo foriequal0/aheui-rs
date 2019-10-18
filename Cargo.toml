@@ -1,0 +1,17 @@
+[package]
+name = "aheui-rs"
+version = "0.1.0"
+authors = ["SeongChan Lee <foriequal@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+aheui-core={path="./aheui-core"}
+
+[dev-dependencies]
+aheui-macro={path="./aheui-macro"}
+
+[workspace]
+members=[
+    "aheui-core",
+    "aheui-macro",
+]

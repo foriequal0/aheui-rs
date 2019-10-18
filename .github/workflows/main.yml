@@ -1,0 +1,21 @@
+name: Aheui tests
+on: [push, pull_request]
+
+jobs:
+  snippet:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+        with:
+            submodules: true
+      - uses: actions-rs/toolchain@v1
+        with:
+            toolchain: nightly
+      - run: cargo test
+      - run: cargo build --bin aheui-rs
+      - run: ./test.sh --disable integer logo
+        working-directory: ./snippets
+        env:
+          AHEUI: ../target/debug/aheui-rs
+          RUST_BACKTRACE: full
+
