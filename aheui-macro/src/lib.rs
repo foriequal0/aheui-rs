@@ -4,7 +4,7 @@ extern crate proc_macro;
 use std::collections::HashMap;
 use std::io::Write;
 
-use aheui_core::OwnedCode;
+use aheui_core::{BorrowedCode, OwnedCode};
 use proc_macro2::{Span, TokenStream};
 use quote::quote;
 use std::ops::Range;
@@ -28,7 +28,7 @@ pub fn aheui(
     let code = {
         let lines = get_lines(&config, &item_fn);
         let owned = OwnedCode::parse_lines(lines.iter().map(|x| x.as_str()));
-        let borrowed = owned.render_as_borrowed("::aheui_core::");
+        let borrowed = BorrowedCode::from(&owned).render("::aheui_core::");
         TokenStream::from_str(&borrowed).unwrap()
     };
     let fnsig = item_fn.sig;
