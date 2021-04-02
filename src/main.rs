@@ -1,4 +1,4 @@
-use aheui_core::{Env, OwnedCode};
+use aheui_core::{engines, Env, OwnedCode, VM};
 use std::io::Write;
 
 fn main() {
@@ -9,7 +9,8 @@ fn main() {
     let stdout = std::io::stdout();
     let mut input = stdin.lock();
     let mut output = stdout.lock();
-    let result = Env::new(&code, &mut input, &mut output).execute();
+    let env = Env::new(&code, &mut input, &mut output);
+    let result = VM::new(env, engines::Interpreter).execute();
     output.flush().unwrap();
     std::process::exit(result);
 }
