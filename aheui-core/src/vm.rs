@@ -168,7 +168,6 @@ where
 }
 
 pub struct Env<'a> {
-    pub code: BorrowedCode<'a>,
     pub cursor: Cursor,
     pub storages: StorageSelector,
     input: &'a mut dyn BufRead,
@@ -176,12 +175,8 @@ pub struct Env<'a> {
 }
 
 impl<'a> Env<'a> {
-    pub fn new<C>(code: C, input: &'a mut dyn BufRead, output: &'a mut dyn Write) -> Self
-    where
-        C: Into<BorrowedCode<'a>>,
-    {
+    pub fn new(input: &'a mut dyn BufRead, output: &'a mut dyn Write) -> Self {
         Env {
-            code: code.into(),
             cursor: Cursor::new(),
             storages: StorageSelector::new(),
             input,
@@ -219,5 +214,5 @@ impl<'a> Env<'a> {
 }
 
 pub trait Engine {
-    fn step(&mut self, env: &mut Env) -> Option<i32>;
+    fn step(&self, env: &mut Env) -> Option<i32>;
 }

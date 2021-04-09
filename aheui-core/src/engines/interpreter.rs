@@ -1,11 +1,22 @@
 use crate::inst::Oper;
-use crate::vm::{Engine, Env};
+use crate::vm::{BorrowedCode, Engine, Env};
 
-pub struct Interpreter;
+pub struct Interpreter<'a> {
+    code: BorrowedCode<'a>,
+}
 
-impl Engine for Interpreter {
-    fn step(&mut self, env: &mut Env) -> Option<i32> {
-        let inst = env.code.get_inst(env.cursor.address).unwrap();
+impl<'a> Interpreter<'a> {
+    pub fn new<C>(code: C) -> Self
+    where
+        C: Into<BorrowedCode<'a>>,
+    {
+        Self { code: code.into() }
+    }
+}
+
+impl<'a> Engine for Interpreter<'a> {
+    fn step(&self, env: &mut Env) -> Option<i32> {
+        let inst = self.code.get_inst(env.cursor.address).unwrap();
         let mut reverse = false;
         match inst.oper {
             Oper::Nop => {}
@@ -100,7 +111,7 @@ impl Engine for Interpreter {
             },
         };
 
-        env.cursor.advance(&env.code, inst.cursor_control, reverse);
+        env.cursor.advance(&self.code, inst.cursor_control, reverse);
         None
     }
 }

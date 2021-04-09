@@ -47,8 +47,8 @@ pub fn aheui(
             #output_prepare
 
             let code = #code;
-            let env = ::aheui_core::Env::new(code, &mut input, &mut output);
-            let vm = ::aheui_core::engines::Interpreter;
+            let env = ::aheui_core::Env::new(&mut input, &mut output);
+            let vm = ::aheui_core::engines::Interpreter::new(code);
             let result = ::aheui_core::VM::new(env, vm).execute();
 
             #output_convert

@@ -5,7 +5,10 @@ fn test_echo() {
     let code = OwnedCode::parse(r"밯망희");
     let mut input = std::io::Cursor::new("밯");
     let mut output = Vec::new();
-    let res = Env::new(&code, &mut input, &mut output).execute();
+
+    let env = Env::new(&mut input, &mut output);
+    let interpreter = engines::Interpreter::new(&code);
+    let res = VM::new(env, interpreter).execute();
 
     assert_eq!(res, 0);
     assert_eq!(std::str::from_utf8(&output), Ok("48175"));
@@ -16,7 +19,10 @@ fn test_bieup_char() {
     let code = OwnedCode::parse(r"밯맣밯맣밯맣밯맣밯맣밯맣희");
     let mut input = std::io::Cursor::new("1+한글😃😄");
     let mut output = Vec::new();
-    let res = Env::new(&code, &mut input, &mut output).execute();
+    let env = Env::new(&mut input, &mut output);
+    let interpreter = engines::Interpreter::new(&code);
+    let res = VM::new(env, interpreter).execute();
+
     assert_eq!(res, 0);
     assert_eq!(std::str::from_utf8(&output), Ok("1+한글😃😄"));
 }
@@ -30,7 +36,10 @@ fn test_pieup() {
     );
     let mut input = std::io::Cursor::new("");
     let mut output = Vec::new();
-    let res = Env::new(&code, &mut input, &mut output).execute();
+    let env = Env::new(&mut input, &mut output);
+    let interpreter = engines::Interpreter::new(&code);
+    let res = VM::new(env, interpreter).execute();
+
     assert_eq!(res, 0);
     assert_eq!(std::str::from_utf8(&output), Ok("81494981"));
 }
@@ -43,7 +52,10 @@ fn test_fibo() {
     );
     let mut input = std::io::Cursor::new("");
     let mut output = Vec::new();
-    Env::new(&code, &mut input, &mut output).execute();
+    let env = Env::new(&mut input, &mut output);
+    let interpreter = engines::Interpreter::new(&code);
+    let res = VM::new(env, interpreter).execute();
+
     assert_eq!(std::str::from_utf8(&output), Ok("23581321345589144233"));
 }
 
@@ -61,7 +73,10 @@ fn test_helloworld() {
     );
     let mut input = std::io::Cursor::new("");
     let mut output = Vec::new();
-    let res = Env::new(&code, &mut input, &mut output).execute();
+    let env = Env::new(&mut input, &mut output);
+    let interpreter = engines::Interpreter::new(&code);
+    let res = VM::new(env, interpreter).execute();
+
     assert_eq!(res, 0);
     assert_eq!(std::str::from_utf8(&output), Ok("Hello, world!\n"));
 }
@@ -77,7 +92,10 @@ fn test_helloworld2() {
     );
     let mut input = std::io::Cursor::new("");
     let mut output = Vec::new();
-    let res = Env::new(&code, &mut input, &mut output).execute();
+    let env = Env::new(&mut input, &mut output);
+    let interpreter = engines::Interpreter::new(&code);
+    let res = VM::new(env, interpreter).execute();
+
     assert_eq!(res, 0);
     assert_eq!(std::str::from_utf8(&output), Ok("안녕하세요?\n"));
 }

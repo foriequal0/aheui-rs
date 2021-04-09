@@ -9,8 +9,9 @@ fn main() {
     let stdout = std::io::stdout();
     let mut input = stdin.lock();
     let mut output = stdout.lock();
-    let env = Env::new(&code, &mut input, &mut output);
-    let result = VM::new(env, engines::Interpreter).execute();
+    let env = Env::new(&mut input, &mut output);
+    let interpreter = engines::Interpreter::new(&code);
+    let result = VM::new(env, interpreter).execute();
     output.flush().unwrap();
     std::process::exit(result);
 }
