@@ -44,13 +44,12 @@ impl Cursor {
 
     pub fn advance(&mut self, code: &BorrowedCode, cursor_control: CursorControl, reverse: bool) {
         self.step = self.step.next(cursor_control, reverse);
-
         match self.step {
             Step::Row(amount) => {
                 self.address.row += amount as i32;
                 if amount > 0 {
                     let height = (code.index.len() - 1) as i32;
-                    let inst = code.get_inst(self.address);
+                    let mut inst = code.get_inst(self.address);
                     while let None = inst {
                         if self.address.row + 1 < height {
                             self.address.row += 1;
@@ -58,10 +57,11 @@ impl Cursor {
                             self.address.row = 0;
                         }
                         assert!(self.address.row >= 0 && self.address.row < height);
+                        inst = code.get_inst(self.address);
                     }
                 } else if amount < 0 {
                     let height = (code.index.len() - 1) as i32;
-                    let inst = code.get_inst(self.address);
+                    let mut inst = code.get_inst(self.address);
                     while let None = inst {
                         if self.address.row >= 1 {
                             self.address.row -= 1;
@@ -69,6 +69,7 @@ impl Cursor {
                             self.address.row = height - 1;
                         }
                         assert!(self.address.row >= 0 && self.address.row < height);
+                        inst = code.get_inst(self.address);
                     }
                 } else {
                     unreachable!()

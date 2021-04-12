@@ -4,15 +4,18 @@ extern crate proc_macro;
 use std::collections::HashMap;
 use std::io::Write;
 use std::ops::Range;
+use std::str::FromStr;
 
 use aheui_core::{BorrowedCode, OwnedCode};
 use proc_macro2::{Span, TokenStream};
-use quote::{quote, ToTokens};
-use syn;
+use quote::quote;
 use syn::spanned::Spanned;
 use syn::*;
 
+use crate::precompiler::{precompile, Precompiled};
+
 mod attr;
+mod precompiler;
 
 #[proc_macro_attribute]
 pub fn aheui(
@@ -24,11 +27,14 @@ pub fn aheui(
 
     let config = parse_config(&attr, &item_fn.sig);
 
-    let owned_code = {
-        let lines = get_lines(&config, &item_fn);
-        OwnedCode::parse_lines(lines.iter().map(|x| x.as_str()))
-    };
-    let borrowed_code = BorrowedCode::from(&owned_code);
+    let lines = get_lines(&config, &item_fn);
+    let owned = OwnedCode::parse_lines(lines.iter().map(|x| x.as_str()));
+    let borrowed_code = BorrowedCode::from(&owned);
+    let Precompiled {
+        code: precompiled_code,
+        create_instance,
+    } = precompile(&borrowed_code);
+
     let fnsig = item_fn.sig;
     let input_prepare = config.input.prepare_input();
     let output_prepare = config.output.prepare_output();
@@ -41,17 +47,22 @@ pub fn aheui(
             use ::std::io::BufRead;
             use ::std::io::Write;
 
+            let code = #borrowed_code;
+
+            #precompiled_code
+
             #input_prepare
             #output_prepare
-
-            let code = #borrowed_code;
             let env = ::aheui_core::Env::new(&mut input, &mut output);
-            let vm = ::aheui_core::engines::Interpreter::new(code);
-            let result = ::aheui_core::VM::new(env, vm).execute();
+
+            let interpreter = ::aheui_core::engines::Interpreter::new(code);
+            let aot = ::aheui_core::engines::AOT::new(interpreter, #create_instance);
+            let result = ::aheui_core::VM::new(env, aot).execute();
 
             #output_convert
         }
     };
+
     proc_macro::TokenStream::from(result)
 }
 

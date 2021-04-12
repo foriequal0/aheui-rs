@@ -38,8 +38,10 @@ impl StorageSelector {
 }
 
 pub trait Storage {
+    fn len(&self) -> usize;
     fn push(&mut self, value: i32);
     fn try_pop(&mut self) -> Option<i32>;
+    fn pop(&mut self) -> i32;
     fn binary_op_assign(&mut self) -> Option<(i32, &mut i32)>;
     fn swap(&mut self) -> bool;
     fn dup(&mut self) -> bool;
@@ -51,12 +53,20 @@ struct Stack {
 }
 
 impl Storage for Stack {
+    fn len(&self) -> usize {
+        self.stack.len()
+    }
+
     fn push(&mut self, value: i32) {
         self.stack.push(value)
     }
 
     fn try_pop(&mut self) -> Option<i32> {
         self.stack.pop()
+    }
+
+    fn pop(&mut self) -> i32 {
+        self.stack.pop().unwrap()
     }
 
     fn binary_op_assign(&mut self) -> Option<(i32, &mut i32)> {
@@ -96,12 +106,20 @@ struct Queue {
 }
 
 impl Storage for Queue {
+    fn len(&self) -> usize {
+        self.queue.len()
+    }
+
     fn push(&mut self, value: i32) {
         self.queue.push_back(value)
     }
 
     fn try_pop(&mut self) -> Option<i32> {
         self.queue.pop_front()
+    }
+
+    fn pop(&mut self) -> i32 {
+        self.queue.pop_front().unwrap()
     }
 
     fn binary_op_assign(&mut self) -> Option<(i32, &mut i32)> {

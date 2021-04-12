@@ -10,6 +10,7 @@ mod parse;
 mod render;
 
 pub use inst::*;
+pub use storage::Storage;
 pub use vm::*;
 
 #[cfg(feature = "parse")]

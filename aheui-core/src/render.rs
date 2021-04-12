@@ -3,6 +3,7 @@ use quote::{quote, ToTokens};
 
 use crate::inst::{CursorControl, Inst, Oper, Select};
 use crate::vm::BorrowedCode;
+use crate::{Address, Cursor, Step};
 
 impl ToTokens for Inst {
     fn to_tokens(&self, tokens: &mut TokenStream) {
@@ -88,5 +89,42 @@ impl<'a> ToTokens for BorrowedCode<'a> {
                 code: &[#(#code),*],
             }
         });
+    }
+}
+
+impl ToTokens for Cursor {
+    fn to_tokens(&self, tokens: &mut TokenStream) {
+        let address = self.address;
+        let step = self.step;
+
+        tokens.extend(quote! {
+            ::aheui_core::Cursor {
+                address: #address,
+                step: #step,
+            }
+        });
+    }
+}
+
+impl ToTokens for Address {
+    fn to_tokens(&self, tokens: &mut TokenStream) {
+        let row = self.row;
+        let col = self.col;
+
+        tokens.extend(quote! {
+            ::aheui_core::Address {
+                row: #row,
+                col: #col,
+            }
+        });
+    }
+}
+
+impl ToTokens for Step {
+    fn to_tokens(&self, tokens: &mut TokenStream) {
+        match self {
+            Step::Row(row) => tokens.extend(quote! { ::aheui_core::Step::Row(#row) }),
+            Step::Column(col) => tokens.extend(quote! { ::aheui_core::Step::Column(#col) }),
+        }
     }
 }
