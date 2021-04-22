@@ -7,8 +7,10 @@ edition = "2018"
 [lib]
 
 [features]
-render = []
+render = ["proc-macro2", "quote"]
 parse = []
 derive_debug = []
 
 [dependencies]
+proc-macro2 = { version = "^1.0.5", optional = true }
+quote = { version = "^1.0.2", optional = true }
