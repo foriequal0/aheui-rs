@@ -1,7 +1,7 @@
-use aheui_macro::aheui;
+use aheui_macro::아희;
 
 // 표준입력으로 문자열을 입력 받고 표준출력을 합니다.
-#[aheui(input=stdin)]
+#[아희(입력=표준입력)]
 fn main() {
     밯망희
 }

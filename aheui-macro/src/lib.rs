@@ -16,7 +16,7 @@ use syn::*;
 mod attr;
 
 #[proc_macro_attribute]
-pub fn aheui(
+pub fn 아희(
     attr: proc_macro::TokenStream,
     item: proc_macro::TokenStream,
 ) -> proc_macro::TokenStream {
