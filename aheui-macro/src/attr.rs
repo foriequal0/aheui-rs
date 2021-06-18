@@ -20,27 +20,27 @@ impl Parse for Attr {
 
 mod kw {
 
-    syn::custom_keyword!(quote);
-    syn::custom_keyword!(raw);
-    syn::custom_keyword!(str);
-    syn::custom_keyword!(doc_comment);
+    syn::custom_keyword!(인용);
+    syn::custom_keyword!(안함);
+    syn::custom_keyword!(문자열);
+    syn::custom_keyword!(문서화주석);
 
-    syn::custom_keyword!(input);
-    syn::custom_keyword!(auto);
-    syn::custom_keyword!(cli);
-    syn::custom_keyword!(stdin);
-    syn::custom_keyword!(arg);
+    syn::custom_keyword!(입력);
+    syn::custom_keyword!(자동);
+    syn::custom_keyword!(명령행인자);
+    syn::custom_keyword!(표준입력);
+    syn::custom_keyword!(인자);
 }
 
 #[derive(Debug)]
 pub enum AttrItem {
     Quote {
-        quote_token: kw::quote,
+        quote_token: kw::인용,
         eq_token: Token![=],
         quote: Quote,
     },
     Input {
-        input_token: kw::input,
+        input_token: kw::입력,
         eq_token: Token![=],
         input: Input,
     },
@@ -49,7 +49,7 @@ pub enum AttrItem {
 impl Parse for AttrItem {
     fn parse(input: &ParseBuffer) -> syn::parse::Result<Self> {
         let lookahead = input.lookahead1();
-        if lookahead.peek(kw::quote) {
+        if lookahead.peek(kw::인용) {
             let quote_token = input.parse()?;
             let eq_token: Token![=] = input.parse()?;
             let quote = input.parse()?;
@@ -58,7 +58,7 @@ impl Parse for AttrItem {
                 eq_token,
                 quote,
             })
-        } else if lookahead.peek(kw::input) {
+        } else if lookahead.peek(kw::입력) {
             let input_token = input.parse()?;
             let eq_token: Token![=] = input.parse()?;
             let input = input.parse()?;
@@ -100,19 +100,19 @@ impl ToTokens for AttrItem {
 
 #[derive(Debug)]
 pub enum Quote {
-    Raw(kw::raw),
-    DocComment(kw::doc_comment),
-    String(kw::str),
+    Raw(kw::안함),
+    DocComment(kw::문서화주석),
+    String(kw::문자열),
 }
 
 impl Parse for Quote {
     fn parse(input: &ParseBuffer) -> syn::parse::Result<Self> {
         let lookahead = input.lookahead1();
-        if lookahead.peek(kw::raw) {
+        if lookahead.peek(kw::안함) {
             Ok(Quote::Raw(input.parse()?))
-        } else if lookahead.peek(kw::doc_comment) {
+        } else if lookahead.peek(kw::문서화주석) {
             Ok(Quote::DocComment(input.parse()?))
-        } else if lookahead.peek(kw::str) {
+        } else if lookahead.peek(kw::문자열) {
             Ok(Quote::String(input.parse()?))
         } else {
             Err(lookahead.error())
@@ -132,11 +132,11 @@ impl ToTokens for Quote {
 
 #[derive(Debug)]
 pub enum Input {
-    Auto(kw::auto),
-    Cli(kw::cli),
-    Stdin(kw::stdin),
+    Auto(kw::자동),
+    Cli(kw::명령행인자),
+    Stdin(kw::표준입력),
     Arg {
-        arg_token: kw::arg,
+        arg_token: kw::인자,
         paren_token: Paren,
         name: Ident,
     },
@@ -145,13 +145,13 @@ pub enum Input {
 impl Parse for Input {
     fn parse(input: &ParseBuffer) -> syn::parse::Result<Input> {
         let lookahead = input.lookahead1();
-        if lookahead.peek(kw::auto) {
+        if lookahead.peek(kw::자동) {
             Ok(Input::Auto(input.parse()?))
-        } else if lookahead.peek(kw::cli) {
+        } else if lookahead.peek(kw::명령행인자) {
             Ok(Input::Cli(input.parse()?))
-        } else if lookahead.peek(kw::stdin) {
+        } else if lookahead.peek(kw::표준입력) {
             Ok(Input::Stdin(input.parse()?))
-        } else if lookahead.peek(kw::arg) {
+        } else if lookahead.peek(kw::인자) {
             let arg_token = input.parse()?;
             let content;
             let paren_token = parenthesized!(content in input);

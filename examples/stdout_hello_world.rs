@@ -1,7 +1,7 @@
-use aheui_macro::aheui;
+use aheui_macro::아희;
 
 /// 표준출력에 문자열을 씁니다.
-#[aheui]
+#[아희]
 fn main() {
     밤밣따빠밣밟따뿌;
     빠맣파빨받밤뚜뭏;
