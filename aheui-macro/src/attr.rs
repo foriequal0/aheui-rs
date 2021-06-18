@@ -1,5 +1,5 @@
 use proc_macro2::{Ident, TokenStream};
-use syn::export::ToTokens;
+use quote::ToTokens;
 use syn::parse::{Parse, ParseBuffer};
 use syn::punctuated::Punctuated;
 use syn::token::Paren;
